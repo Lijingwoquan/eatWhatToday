@@ -1,0 +1,122 @@
+<template>
+	<view v-if="!panelVisiable">
+		<u-icon class="plus-btn-right rounded-circle position-fixed" size="60rpx" :code="'\ue657'"
+			@click="panelVisiable = true"></u-icon>
+		<u-icon class="plus-btn-left rounded-circle position-fixed " size="60rpx" :code="'\ue750'"
+			@click="getRandomDish"></u-icon>
+	</view>
+	<view v-else class="panel position-fixed bottom-0 p-2 justify-center" :style="{ bottom:`${panelBottom}px`} ">
+		<input placeholder="添加菜品" :focus="panelFous" :adjust-position="false"
+			@keyboardheightchange="onKeyboardheightchange" @confirm="onInputConfirm" />
+	</view>
+
+	<view v-if="hasGetRandomDish"
+		class="showDish animate-base rounded-circle justify-center align-center p-4 m-4 position-fixed "
+		:class="[amplity]">
+		<text> {{ dishName }}</text>
+	</view>
+</template>
+
+<script>
+	import { Item } from "@/common/type.uts"
+	export default {
+		name: "u-action",
+		emits: ["output"],
+		props: {
+			list: {
+				type: Array,
+				required: true
+			},
+		},
+		data() {
+			return {
+				panelBottom: 0,
+				panelVisiable: false,
+				panelFous: false,
+				amplity: '',
+				hasGetRandomDish: false,
+				dishName: ""
+			};
+		},
+		watch: {
+			panelVisiable(v : boolean) {
+				this.panelFous = v
+			}
+		},
+		methods: {
+			onInputConfirm(e : InputConfirmEvent) {
+				const text = e.detail.value
+				const isEmpty = text.length == 0 || text.trim() == ''
+				if (isEmpty) {
+					return
+				}
+				this.$emit('output', text)
+			},
+			onKeyboardheightchange(e : InputKeyboardHeightChangeEvent) {
+				if (e.detail.height <= 0) {
+					this.panelVisiable = false
+				}
+				this.panelBottom = e.detail.height > 0 ? 340 : 0
+			},
+			getRandomDish() {
+				if (!this.hasGetRandomDish) {
+					this.hasGetRandomDish = true
+					this.$nextTick(() => {
+						this.amplity = "animate-amplify"
+					})
+					const item = this.list[Math.round(Math.random() * (this.list.length - 1))] as Item
+					if (item.text != "") {
+						this.dishName = item.text
+					}
+				} else {
+					this.amplity = "animate-fade-out"
+				}
+			}
+		},
+	}
+</script>
+
+<style>
+	.plus-btn-right {
+		width: 80rpx;
+		height: 80rpx;
+		right: 25rpx;
+		bottom: 50rpx;
+	}
+
+	.showDish {
+		bottom: 15rpx;
+		width: 500rpx;
+		right: 80rpx;
+		left: 80rpx;
+		background-color: #fd717f;
+	}
+
+	.plus-btn-left {
+		width: 80rpx;
+		height: 80rpx;
+		left: 25rpx;
+		bottom: 50rpx;
+	}
+
+	.panel {
+		width: 100%;
+		height: 100rpx;
+		background-color: #fb3b88;
+	}
+
+	.animate-base {
+		transform: scale(0.4);
+		transition: transform 0.3s;
+	}
+
+	.animate-amplify {
+		transform: scale(0.8);
+		transition: transform 0.3s;
+	}
+
+	.animate-fade-out {
+		transform: scale(0.8);
+		opacity: 0.3;
+	}
+</style>

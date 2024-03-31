@@ -1,0 +1,82 @@
+
+	import type { CheckedPayload } from "@/common/type.uts"
+	export default {
+		name: "u-todo-item",
+		emits: ["destory", "checked"],
+		data() {
+			return {
+				amplity: '',
+				intenalChecked: false
+			}
+		},
+		computed: {
+			fadeOut() : string {
+				return this.intenalChecked ? "animate-fade-out" : ""
+			}
+		},
+		props: {
+			id: {
+				type: String,
+				required: true
+			},
+			text: {
+				type: String,
+				required: true
+			},
+			checked: {
+				type: Boolean,
+				required: true
+			}
+		},
+		methods: {
+			destory() {
+				this.$emit("destory", this.id)
+			},
+			onSwitchChange(e : SwitchChangeEvent) {
+				const payload : CheckedPayload = {
+					id: this.id,
+					checked: e.detail.value
+				}
+				this.intenalChecked = payload.checked
+				this.$emit("checked", payload)
+			}
+		},
+		created() {
+			this.intenalChecked = this.checked
+		},
+		mounted() {
+			this.$nextTick(() => {
+				this.amplity = "animate-amplify"
+			})
+		},
+
+	}
+
+
+import _easycom_u_icon from '@/components/u-icon/u-icon.uvue'
+function GenComponentsUTodoItemUTodoItemRender(): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+const _component_switch = resolveComponent("switch")
+const _component_u_icon = resolveEasyComponent("u-icon",_easycom_u_icon)
+
+  return createElementVNode("list-item", utsMapOf({
+    type: _ctx.id,
+    class: normalizeClass(["bg-white m-2 p-4 rounded-lg flex justify-between animate-base", [_ctx.amplity,_ctx.fadeOut]])
+  }), [
+    createElementVNode("view", utsMapOf({ class: "flex align-center" }), [
+      createVNode(_component_switch, utsMapOf({
+        style: normalizeStyle(utsMapOf({"transform":"scale(0.7)"})),
+        checked: _ctx.intenalChecked,
+        onChange: _ctx.onSwitchChange
+      }), null, 8, ["style", "checked", "onChange"]),
+      createElementVNode("text", utsMapOf({ class: "font-lg ml-1" }), toDisplayString(_ctx.text), 1)
+    ]),
+    createVNode(_component_u_icon, utsMapOf({
+      code: '\ue613',
+      color: "gray",
+      onClick: _ctx.destory
+    }), null, 8, ["onClick"])
+  ], 10, ["type"])
+}
+const GenComponentsUTodoItemUTodoItemStyles = [utsMapOf([["animate-base", padStyleMapOf(utsMapOf([["transform", "scale(0.4)"], ["transitionProperty", "transform"], ["transitionDuration", "0.3s"]]))], ["animate-amplify", padStyleMapOf(utsMapOf([["transform", "scale(1)"], ["transitionProperty", "transform"], ["transitionDuration", "0.3s"]]))], ["animate-fade-out", padStyleMapOf(utsMapOf([["opacity", 0.3]]))], ["@TRANSITION", utsMapOf([["animate-base", utsMapOf([["property", "transform"], ["duration", "0.3s"]])], ["animate-amplify", utsMapOf([["property", "transform"], ["duration", "0.3s"]])]])]])]

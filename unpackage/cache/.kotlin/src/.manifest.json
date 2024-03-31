@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "env": {
+    "compiler_version": "4.07"
+  },
+  "files": {
+    "components/u-action/u-action.kt": {
+      "md5": "5403f5050929076812e211b41c07c861ce0cad57",
+      "class": "GenComponentsUActionUAction"
+    },
+    "components/u-icon/u-icon.kt": {
+      "class": "GenComponentsUIconUIcon",
+      "md5": "22bb6fa58e9a2adfa8fd0a8b161db7b231020304"
+    },
+    "pages/index/index.kt": {
+      "class": "GenPagesIndexIndex",
+      "md5": "9097e00c12458b856b27384ee8ce211585227209"
+    },
+    "index.kt": {
+      "md5": "3521f7f2c393d37ab70bfdfbd0aad8041cee0760",
+      "class": ""
+    },
+    "components/u-todo-item/u-todo-item.kt": {
+      "md5": "e03d7511cd71e59b6d38db512772e44504c748d6",
+      "class": "GenComponentsUTodoItemUTodoItem"
+    }
+  }
+}

@@ -1,0 +1,122 @@
+
+	import { nanoid } from "@/common/id.uts"
+	import { CheckedPayload } from "@/common/type.uts"
+	import { Item } from "@/common/type.uts"
+	const storageKey = "uiappx-todo-list"
+	export default {
+		data() {
+			return {
+				list: [] as Array<Item>
+			}
+		},
+		created() {
+			this.initListFromStorage()
+		},
+		computed: {
+			todoList() : Array<Item> {
+				return this.list.filter((item : Item) : boolean => !item.checked)
+			},
+			completedList() : Array<Item> {
+				return this.list.filter((item : Item) : boolean => item.checked)
+			}
+		},
+		methods: {
+			appedItemToList(text : string) {
+				const item : Item = {
+					id: nanoid(),
+					text: text,
+					checked: false
+				}
+				this.list = [item, ...this.list]
+				this.updateListToStroage()
+			},
+			deleteItemfromList(id : string) {
+				this.list = this.list.filter((item : Item) : boolean => id != item.id)
+				this.updateListToStroage()
+			},
+			onChecked(payload : CheckedPayload) {
+				const item = this.list.find((item : Item) : boolean => item.id == payload.id)
+				item!.checked = payload.checked
+				this.updateListToStroage()
+			},
+			updateListToStroage() {
+				uni.setStorageSync(storageKey, JSON.stringify(this.list))
+			},
+			initListFromStorage() {
+				uni.getStorage({
+					key: storageKey,
+					success: (res : GetStorageSuccess) => {
+						const list = JSON.parseArray<Item>(res.data as string)
+						if (list != null) {
+							this.list = list
+						}
+					}
+				})
+			},
+		}
+	}
+
+
+import _easycom_u_todo_item from '@/components/u-todo-item/u-todo-item.uvue'
+import _easycom_u_action from '@/components/u-action/u-action.uvue'
+import _imports_0 from '@/static/empty.png'
+
+function GenPagesIndexIndexRender(): any | null {
+const _ctx = this
+const _cache = this.$.renderCache
+const _component_u_todo_item = resolveEasyComponent("u-todo-item",_easycom_u_todo_item)
+const _component_u_action = resolveEasyComponent("u-action",_easycom_u_action)
+
+  return createElementVNode(Fragment, null, [
+    createElementVNode("list-view", utsMapOf({
+      direction: "vertical",
+      style: normalizeStyle(utsMapOf({"height":"1200rpx"}))
+    }), [
+      createElementVNode("list-item", utsMapOf({ class: "mt-5 flex justify-center flex-column align-center" }), [
+        _ctx.todoList.length != 0
+          ? createElementVNode("view", utsMapOf({ key: 0 }), [
+              createElementVNode("text", utsMapOf({ class: "text-dark font-lg p-2" }), " 没吃过 ")
+            ])
+          : createCommentVNode("v-if", true)
+      ]),
+      createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.todoList, (item, _, _, _): VNode => {
+        return createVNode(_component_u_todo_item, utsMapOf({
+          key: item.id,
+          checked: item.checked,
+          id: item.id,
+          text: item.text,
+          onDestory: _ctx.deleteItemfromList,
+          onChecked: _ctx.onChecked
+        }), null, 8, ["checked", "id", "text", "onDestory", "onChecked"])
+      }), 128 /* KEYED_FRAGMENT */),
+      createElementVNode("list-item", utsMapOf({ class: "mt-5 flex justify-center flex-column align-center" }), [
+        _ctx.completedList.length != 0
+          ? createElementVNode("view", utsMapOf({ key: 0 }), [
+              createElementVNode("text", utsMapOf({ class: "text-dark font-lg p-2" }), " 吃过 ")
+            ])
+          : createCommentVNode("v-if", true),
+        _ctx.list.length == 0
+          ? createElementVNode("view", utsMapOf({ key: 1 }), [
+              createElementVNode("image", utsMapOf({ src: _imports_0 })),
+              createElementVNode("text", utsMapOf({ class: "text-light-black text-center font-lg mt-2" }), "没有要吃的，点击小角图片添加")
+            ])
+          : createCommentVNode("v-if", true)
+      ]),
+      createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.completedList, (item, _, _, _): VNode => {
+        return createVNode(_component_u_todo_item, utsMapOf({
+          key: item.id,
+          checked: item.checked,
+          id: item.id,
+          text: item.text,
+          onDestory: _ctx.deleteItemfromList,
+          onChecked: _ctx.onChecked
+        }), null, 8, ["checked", "id", "text", "onDestory", "onChecked"])
+      }), 128 /* KEYED_FRAGMENT */)
+    ], 4),
+    createVNode(_component_u_action, utsMapOf({
+      list: _ctx.todoList,
+      onOutput: _ctx.appedItemToList
+    }), null, 8, ["list", "onOutput"])
+  ], 64 /* STABLE_FRAGMENT */)
+}
+const GenPagesIndexIndexStyles = []

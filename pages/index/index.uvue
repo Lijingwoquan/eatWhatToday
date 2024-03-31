@@ -1,0 +1,90 @@
+<template>
+	<list-view direction="vertical" style="height: 1200rpx;">
+		<list-item class="mt-5 flex justify-center flex-column align-center">
+			<view v-if="todoList.length != 0">
+				<text class="text-dark font-lg p-2">
+					没吃过
+				</text>
+			</view>
+		</list-item>
+		<u-todo-item v-for="item in todoList" :key="item.id" :checked="item.checked" :id="item.id" :text="item.text"
+			@destory="deleteItemfromList" @checked="onChecked"></u-todo-item>
+		<list-item class="mt-5 flex justify-center flex-column align-center">
+			<view v-if="completedList.length != 0">
+				<text class="text-dark font-lg p-2">
+					吃过
+				</text>
+			</view>
+			<view v-if="list.length == 0">
+				<image src="@/static/empty.png"></image>
+				<text class="text-light-black text-center font-lg mt-2">没有要吃的，点击小角图片添加</text>
+			</view>
+		</list-item>
+		<u-todo-item v-for="item in completedList" :key="item.id" :checked="item.checked" :id="item.id"
+			:text="item.text" @destory="deleteItemfromList" @checked="onChecked"></u-todo-item>
+	</list-view>
+	<u-action :list="todoList" @output="appedItemToList"></u-action>
+</template>
+
+<script>
+	import { nanoid } from "@/common/id.uts"
+	import { CheckedPayload } from "@/common/type.uts"
+	import { Item } from "@/common/type.uts"
+	const storageKey = "uiappx-todo-list"
+	export default {
+		data() {
+			return {
+				list: [] as Array<Item>
+			}
+		},
+		created() {
+			this.initListFromStorage()
+		},
+		computed: {
+			todoList() : Array<Item> {
+				return this.list.filter((item : Item) : boolean => !item.checked)
+			},
+			completedList() : Array<Item> {
+				return this.list.filter((item : Item) : boolean => item.checked)
+			}
+		},
+		methods: {
+			appedItemToList(text : string) {
+				const item : Item = {
+					id: nanoid(),
+					text: text,
+					checked: false
+				}
+				this.list = [item, ...this.list]
+				this.updateListToStroage()
+			},
+			deleteItemfromList(id : string) {
+				this.list = this.list.filter((item : Item) : boolean => id != item.id)
+				this.updateListToStroage()
+			},
+			onChecked(payload : CheckedPayload) {
+				const item = this.list.find((item : Item) : boolean => item.id == payload.id)
+				item!.checked = payload.checked
+				this.updateListToStroage()
+			},
+			updateListToStroage() {
+				uni.setStorageSync(storageKey, JSON.stringify(this.list))
+			},
+			initListFromStorage() {
+				uni.getStorage({
+					key: storageKey,
+					success: (res : GetStorageSuccess) => {
+						const list = JSON.parseArray<Item>(res.data as string)
+						if (list != null) {
+							this.list = list
+						}
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+
+</style>

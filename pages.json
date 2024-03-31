@@ -1,0 +1,15 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": {
+			"navigationBarTitleText": "任务"
+		}
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "todoList",
+		"navigationBarBackgroundColor": "#b92ddb",
+		"backgroundColor": "#b92ddb"
+	},
+	"uniIdRouter": {}
+}

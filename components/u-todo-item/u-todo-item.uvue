@@ -1,0 +1,81 @@
+<template>
+	<list-item :type="id" class="bg-white m-2 p-4 rounded-lg flex justify-between animate-base"
+		:class="[amplity,fadeOut]">
+		<view class="flex align-center">
+			<switch style="transform: scale(0.7);" :checked="intenalChecked" @change="onSwitchChange"></switch>
+			<text class="font-lg ml-1">{{text}}</text>
+		</view>
+		<u-icon :code="'\ue613'" color="gray" @click="destory"></u-icon>
+	</list-item>
+</template>
+
+<script>
+	import type { CheckedPayload } from "@/common/type.uts"
+	export default {
+		name: "u-todo-item",
+		emits: ["destory", "checked"],
+		data() {
+			return {
+				amplity: '',
+				intenalChecked: false
+			}
+		},
+		computed: {
+			fadeOut() : string {
+				return this.intenalChecked ? "animate-fade-out" : ""
+			}
+		},
+		props: {
+			id: {
+				type: String,
+				required: true
+			},
+			text: {
+				type: String,
+				required: true
+			},
+			checked: {
+				type: Boolean,
+				required: true
+			}
+		},
+		methods: {
+			destory() {
+				this.$emit("destory", this.id)
+			},
+			onSwitchChange(e : SwitchChangeEvent) {
+				const payload : CheckedPayload = {
+					id: this.id,
+					checked: e.detail.value
+				}
+				this.intenalChecked = payload.checked
+				this.$emit("checked", payload)
+			}
+		},
+		created() {
+			this.intenalChecked = this.checked
+		},
+		mounted() {
+			this.$nextTick(() => {
+				this.amplity = "animate-amplify"
+			})
+		},
+
+	}
+</script>
+
+<style>
+	.animate-base {
+		transform: scale(0.4);
+		transition: transform 0.3s;
+	}
+
+	.animate-amplify {
+		transform: scale(1);
+		transition: transform 0.3s;
+	}
+
+	.animate-fade-out {
+		opacity: 0.3;
+	}
+</style>

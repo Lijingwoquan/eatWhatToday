@@ -1,0 +1,27 @@
+{
+  "id": "__UNI__7752EBC",
+  "name": "今天吃点什么",
+  "description": "今天吃点什么",
+  "version": {
+    "name": "1.0.0",
+    "code": "100"
+  },
+  "uni-app-x": {},
+  "app": {
+    "distribute": {
+      "icons": {
+        "android": {
+          "hdpi": "static/helloKitty.png",
+          "xhdpi": "static/helloKitty.png",
+          "xxhdpi": "static/helloKitty.png",
+          "xxxhdpi": ""
+        }
+      },
+      "modules": {
+        "uni-storage": {},
+        "uni-prompt": {},
+        "uni-exit": {}
+      }
+    }
+  }
+}
